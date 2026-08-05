@@ -15,21 +15,41 @@ A minimalist, highly responsive system registry built with **React (Bootstrap 5)
 
 ---
 
-## Setup & Running Instructions
+## Setup & Local Running Instructions
 
-### 1. Install Dependencies
-Run the installation command inside the project root:
+Follow these steps to run the project locally on your machine:
+
+### 1. Clone the Repository
+Open your terminal and run:
+```bash
+git clone https://github.com/yogapriya-Balasubramaniyan/ModuleTask.git
+cd ModuleTask
+```
+
+### 2. Install Dependencies
+Install all required package packages for both backend and frontend:
 ```bash
 npm install
 ```
 
-### 2. Run in Development Mode
-To boot both the Express API server (port 3001) and Vite frontend server (port 5174) concurrently inside the same terminal shell, run:
+### 3. Start the Application
+Run the concurrent dev command:
 ```bash
 npm run dev
 ```
+This single command automatically starts:
+- The **Express API server** on port `3001`
+- The **Vite + React development server** on port `5174` (or next available port)
+- The **SQLite database initialization & mock seeding** inside `backend/modules.db`
 
-Open [http://localhost:5174/](http://localhost:5174/) (or the port specified by Vite) in your browser.
+### 4. Access in Browser
+Once running, open your browser and navigate to:
+👉 **[http://localhost:5174/](http://localhost:5174/)** (or the port shown in your terminal logs)
+
+### 5. Access Credentials
+To sign in to the dashboard, use the default administrator credentials:
+- **Username**: `admin`
+- **Password**: `admin123`
 
 ---
 
@@ -42,7 +62,7 @@ task/
 │   └── index.js
 ├── src/                # Frontend application
 │   ├── components/     # Navbar and FilterPanel layout items
-│   ├── pages/          # ModuleList, ModuleView, and ModuleForm views
+│   ├── pages/          # Login, ModuleList, ModuleView, and ModuleForm views
 │   ├── App.jsx         # View router and state coordinator
 │   └── main.jsx        # App entry point
 ├── package.json
