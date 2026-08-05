@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import FilterPanel from './components/FilterPanel';
 
 // Page Views
+import Login from './pages/Login';
 import ModuleList from './pages/ModuleList';
 import ModuleView from './pages/ModuleView';
 import ModuleForm from './pages/ModuleForm';
@@ -12,6 +13,11 @@ import ModuleForm from './pages/ModuleForm';
 const CATEGORIES = ['Security', 'Analytics', 'Messaging', 'Billing', 'Database', 'Frontend', 'DevOps'];
 
 const App = () => {
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('isAuthenticated') === 'true';
+  });
+
   const [view, setView] = useState('list');
   const [selectedId, setSelectedId] = useState(null);
   
@@ -23,6 +29,17 @@ const App = () => {
   const showToast = (msg) => {
     setToast(msg);
     setTimeout(() => setToast(null), 4000);
+  };
+
+  const handleLogin = () => {
+    sessionStorage.setItem('isAuthenticated', 'true');
+    setIsAuthenticated(true);
+    setView('list');
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('isAuthenticated');
+    setIsAuthenticated(false);
   };
 
   const handleApplyFilters = (filters) => {
@@ -51,10 +68,15 @@ const App = () => {
     });
   };
 
+  // Guard page for Login view
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
+
   return (
     <div className="d-flex flex-column min-vh-100 bg-light text-dark">
-      {/* Navbar Header */}
-      <Navbar onViewList={() => setView('list')} />
+      {/* Navbar Header with Logout Action */}
+      <Navbar onViewList={() => setView('list')} onLogout={handleLogout} />
 
       {/* Toast popup */}
       {toast && (
