@@ -11,17 +11,18 @@ The application separates frontend and backend code into dedicated flat layouts:
 ```
 task/
 ├── backend/            # Dedicated Backend Folder
-│   ├── db.js           # SQLite connection, table schema, and mock seed data
+│   ├── db.js           # SQLite connection, table schema, and mock seed data (collaborators: Yogesh, Muthu, Yogitha, Gowtham)
 │   └── index.js        # Express server and endpoints (/modules)
 ├── src/                # Dedicated Frontend Folder
 │   ├── components/     # Reusable layout elements (imported directly by file name)
-│   │   ├── Navbar.jsx  # Page header branding navbar
+│   │   ├── Navbar.jsx  # Page header branding navbar & Logout action button
 │   │   └── FilterPanel.jsx # Slide-out filter panel drawer (manages inputs locally)
 │   ├── pages/          # Full page view components (fetching internally, imported directly by file name)
+│   │   ├── Login.jsx       # Centered credential login page (checks admin/admin123)
 │   │   ├── ModuleList.jsx  # Modules list table (fetches modules locally based on active filters)
 │   │   ├── ModuleView.jsx  # Detail cards view (fetches single module internally on mount)
 │   │   └── ModuleForm.jsx  # Form handling Create and Edit states (fetches / saves internally)
-│   ├── App.jsx         # Root app layout router (coordinates active view navigation)
+│   ├── App.jsx         # Root app layout router (coordinates active view navigation & guards session states)
 │   ├── index.css       # Core stylesheet presets
 │   └── main.jsx        # Mount configuration loading Bootstrap
 ├── vite.config.js      # Vite dev settings mapping /api to port 3001
@@ -32,27 +33,21 @@ task/
 
 ## 2. System Flow
 
-The diagram below details the data exchange path between components. Notice that the parent `App.jsx` handles only the routing view transitions, while pages make HTTP requests independently:
+The diagram below details the data exchange path between components:
 
 ```
-                  [ parent App.jsx ] 
-                ( Coordinates active view )
-                            │
-         ┌──────────────────┼──────────────────┐
-         ▼                  ▼                  ▼
-  [ pages/ModuleList ] [ pages/ModuleView ] [ pages/ModuleForm ]
-  (Fetches list internally)  (Fetches detail internally)  (Saves data internally)
-         │                  │                  │
-         └──────────────────┼──────────────────┘
-                            │ ( HTTP API Requests )
-                            ▼
-                    [ Vite Proxy (/api) ]
-                            │
-                            ▼
-                [ backend/index.js (3001) ]
-                            │
-                            ▼
-                [ SQLite Database (db.js) ]
+[ User Interaction ]
+        │
+        ▼
+   [ App.jsx ] ──( Checks session storage 'isAuthenticated' === 'true' )
+        │
+        ├─► Not Logged In ──► Render [ pages/Login.jsx ] (Checks admin/admin123)
+        │
+        └─► Logged In ─────► Render Dashboard Router
+                                 │
+                                 ├──► [ pages/ModuleList ] ──► (HTTP API Fetch)
+                                 ├──► [ pages/ModuleView ] ──► (HTTP API Fetch)
+                                 └──► [ pages/ModuleForm ] ──► (HTTP API Save)
 ```
 
 ---
